@@ -1,4 +1,3 @@
-
 const Movie = require('../models/Movie');
 
 
@@ -25,14 +24,30 @@ exports.getMovieById = async (req, res) => {
 
 exports.addMovie = async (req, res) => {
   try {
-    const { title, category, rating } = req.body;
-    const newMovie = new Movie({ title, category, rating });
+    const { title, category, rating, poster } = req.body;
+    const newMovie = new Movie({ title, category, rating, poster });
     await newMovie.save();
     res.status(201).json(newMovie);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+exports.updateMovie = async (req, res) => {
+  try {
+    const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    if (!updatedMovie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+
+    res.json({ message: 'Movie updated successfully', movie: updatedMovie });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 
 
 exports.getMoviesByCategory = async (req, res) => {
@@ -43,7 +58,6 @@ exports.getMoviesByCategory = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 exports.rateMovie = async (req, res) => {
   try {
@@ -59,7 +73,7 @@ exports.rateMovie = async (req, res) => {
   }
 };
 
-// Delete a movie by title
+
 exports.deleteMovie = async (req, res) => {
   try {
     const movie = await Movie.findOneAndDelete({ title: req.params.title });

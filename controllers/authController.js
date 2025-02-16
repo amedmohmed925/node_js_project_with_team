@@ -45,25 +45,25 @@ exports.signIn = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // إنشاء Access Token
+
     const accessToken = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '15h' } // مدة قصيرة للأمان
+      { expiresIn: '15h' }
     );
 
-    // إنشاء Refresh Token
+
     const refreshToken = jwt.sign(
       { id: user._id },
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: '7d' } // صالح لمدة 7 أيام
+      { expiresIn: '7d' } 
     );
 
-    // حفظ الـ Refresh Token في قاعدة البيانات
+
     user.refreshToken = refreshToken;
     await user.save();
 
-    // إرسال الـ Tokens
+
     res.json({ user, accessToken, refreshToken });
   } catch (err) {
     res.status(500).json({ message: 'Something went wrong', error: err.message });
@@ -77,7 +77,7 @@ exports.refreshToken = async (req, res) => {
       return res.status(401).json({ message: 'Refresh token is required' });
     }
 
-    // البحث عن المستخدم بناءً على الـ Refresh Token
+
     const user = await User.findOne({ refreshToken: token });
     if (!user) {
       return res.status(403).json({ message: 'Invalid refresh token' });

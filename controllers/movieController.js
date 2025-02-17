@@ -24,8 +24,8 @@ exports.getMovieById = async (req, res) => {
 
 exports.addMovie = async (req, res) => {
   try {
-    const { title, category, rating, poster } = req.body;
-    const newMovie = new Movie({ title, category, rating, poster });
+    const { title, category, discription , rating, poster } = req.body;
+    const newMovie = new Movie({ title, category,discription, rating, poster });
     await newMovie.save();
     res.status(201).json(newMovie);
   } catch (err) {
